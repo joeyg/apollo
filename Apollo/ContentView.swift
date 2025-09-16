@@ -7,10 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import FamilyControls
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
+
+    @State private var isRequestingAuth = false
+    @State private var authStatus: AuthorizationStatus = AuthorizationCenter.shared.authorizationStatus
 
     var body: some View {
         NavigationSplitView {
@@ -24,15 +28,54 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-#if os(macOS)
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-#endif
             .toolbar {
-#if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-#endif
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        isRequestingAuth = true
+                        Task {
+                            do {
+                                try await ScreenTimeAuthorization.requestAuthorization()
+                            } catch {
+                                // You may want to present an error to the user.
+                                print("Authorization failed: \(error)")
+                            }
+                            authStatus = ScreenTimeAuthorization.authorizationStatus
+                            isRequestingAuth = false
+                        }
+                    } label: {
+                        if isRequestingAuth {
+                            ProgressView()
+                        } else {
+                            switch authStatus {
+                            case .notDetermined:
+                                Label("Authorize", systemImage: "hand.raised")
+                            case .approved:
+                                Label("Authorized", systemImage: "checkmark.seal")
+                            case .denied:
+                                Label("Authorization Denied", systemImage: "xmark.seal")
+                            @unknown default:
+                                Label("Authorize", systemImage: "hand.raised")
+                            }
+                        }
+                    }
+                    .help("Request Screen Time authorization")
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        do {
+                            try DeviceActivityScheduler.startFullDayMonitoring()
+                            print("Started 24-hour monitoring")
+                        } catch {
+                            print("Failed to start monitoring: \(error)")
+                        }
+                    } label: {
+                        Label("Start Monitoring", systemImage: "clock.arrow.circlepath")
+                    }
+                    .help("Start a daily 24-hour device activity monitor")
+                }
                 ToolbarItem {
                     Button(action: addItem) {
                         Label("Add Item", systemImage: "plus")

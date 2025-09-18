@@ -10,28 +10,52 @@ import SwiftData
 import FamilyControls
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @EnvironmentObject var logStore: LogStore
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var isRequestingAuth = false
     @State private var authStatus: AuthorizationStatus = AuthorizationCenter.shared.authorizationStatus
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
+            List(logStore.items) { item in
+                NavigationLink {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Event: \(item.event)")
+                            .font(.headline)
+                        Text("Activity: \(item.activity)")
+                            .font(.subheadline)
                         Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .padding()
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(item.event)
+                            .font(.headline)
+                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
-                .onDelete(perform: deleteItems)
+            }
+            .task {
+                logStore.startAutoRefresh()
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                switch newPhase {
+                case .active:
+                    logStore.startAutoRefresh()
+                default:
+                    logStore.stopAutoRefresh()
+                }
+            }
+            .refreshable {
+                logStore.load()
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         isRequestingAuth = true
@@ -76,34 +100,14 @@ struct ContentView: View {
                     }
                     .help("Start a daily 24-hour device activity monitor")
                 }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
             }
         } detail: {
             Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .environmentObject(LogStore())
 }

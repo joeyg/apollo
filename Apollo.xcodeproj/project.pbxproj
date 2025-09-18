@@ -65,11 +65,21 @@
 			);
 			target = D81875012E79095A00F8FEB7 /* ApolloDeviceActivityMonitor */;
 		};
+		D818751F2E7BA2A100F8FEB7 /* Exceptions for "Apollo" folder in "Apollo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D81874CE2E7903AD00F8FEB7 /* Apollo */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D81874D12E7903AD00F8FEB7 /* Apollo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D818751F2E7BA2A100F8FEB7 /* Exceptions for "Apollo" folder in "Apollo" target */,
+			);
 			path = Apollo;
 			sourceTree = "<group>";
 		};
@@ -501,12 +511,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Apollo/Apollo.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B56KPY65Q3;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Apollo/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -544,12 +557,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Apollo/Apollo.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B56KPY65Q3;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Apollo/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -685,6 +701,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApolloDeviceActivityMonitor/ApolloDeviceActivityMonitor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B56KPY65Q3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ApolloDeviceActivityMonitor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ApolloDeviceActivityMonitor;
@@ -715,6 +732,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApolloDeviceActivityMonitor/ApolloDeviceActivityMonitor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B56KPY65Q3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ApolloDeviceActivityMonitor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ApolloDeviceActivityMonitor;

@@ -7,9 +7,15 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
+import BackgroundTasks
+import UserNotifications
 
 @main
 struct ApolloApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var logStore = LogStore()
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -26,6 +32,10 @@ struct ApolloApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(logStore)
+                .task {
+                    BackgroundTaskManager.shared.scheduleAppRefresh()
+                }
         }
         .modelContainer(sharedModelContainer)
     }

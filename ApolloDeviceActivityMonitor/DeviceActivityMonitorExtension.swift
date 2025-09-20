@@ -11,19 +11,21 @@ import Foundation
 // Optionally override any of the functions below.
 // Make sure that your class name matches the NSExtensionPrincipalClass in your Info.plist.
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
+    private static let isoFormatter = ISO8601DateFormatter()
+
     // MARK: - Shared defaults logging
     /// Update this to your App Group identifier so the extension and app can share data.
     private let appGroupIdentifier = "group.com.github.joeyg.apollo"
     private let eventLogsKey = "DeviceActivityEventLogs"
 
-    /// Appends a log entry to shared UserDefaults under `eventLogsKey`.
+    /// Appends a compact log line to shared UserDefaults under `eventLogsKey`.
     /// Keeps only the most recent 100 entries to avoid unbounded growth.
-    private func appendEventLog(_ log: [String: Any]) {
+    private func appendEventLogLine(_ line: String) {
         guard let defaults = UserDefaults(suiteName: appGroupIdentifier) else {
             return
         }
-        var logs = defaults.array(forKey: eventLogsKey) as? [[String: Any]] ?? []
-        logs.append(log)
+        var logs = defaults.stringArray(forKey: eventLogsKey) ?? []
+        logs.append(line)
         if logs.count > 100 { // cap to latest 100
             logs = Array(logs.suffix(100))
         }
@@ -43,14 +45,10 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
         super.eventDidReachThreshold(event, activity: activity)
 
-        // Write a log of the event to shared defaults
-        let timestamp = ISO8601DateFormatter().string(from: Date())
-        let log: [String: Any] = [
-            "timestamp": timestamp,
-            "event": event.rawValue,
-            "activity": activity.rawValue
-        ]
-        appendEventLog(log)
+        let timestamp = Self.isoFormatter.string(from: Date())
+        // Compact, single-line log to reduce memory and bridging overhead
+        let line = "\(timestamp)|\(event.rawValue)|\(activity.rawValue)"
+        appendEventLogLine(line)
     }
 
     override func intervalWillStartWarning(for activity: DeviceActivityName) {

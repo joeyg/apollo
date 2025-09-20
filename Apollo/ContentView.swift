@@ -18,7 +18,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List(logStore.items) { item in
+            List(logStore.items.sorted(by: { $0.timestamp > $1.timestamp })) { item in
                 NavigationLink {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Event: \(item.event)")
@@ -99,6 +99,15 @@ struct ContentView: View {
                         Label("Start Monitoring", systemImage: "clock.arrow.circlepath")
                     }
                     .help("Start a daily 24-hour device activity monitor")
+                }
+                ToolbarItem(placement: .destructiveAction) {
+                    Button(role: .destructive) {
+                        logStore.clear()
+                        logStore.load()
+                    } label: {
+                        Label("Clear Logs", systemImage: "trash")
+                    }
+                    .help("Clear all device activity logs")
                 }
             }
         } detail: {
